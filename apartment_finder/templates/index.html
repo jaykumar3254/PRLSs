@@ -6,6 +6,194 @@
     <title>Document</title>
 </head>
 <body>
-    
+
+    <!--NAVBAR -->
+    <nav class="navbar" style="border-bottom:1px solid var(--border);padding:14px 0;background:rgba(13,17,23,.9);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;">
+  <div class="container d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-2">
+      <span style="font-size:1.4rem;"></span>
+      <span style="font-weight:800;font-size:1rem;letter-spacing:-.01em;">PRLSS</span>
+      <span style="font-size:.7rem;color:var(--text-muted);margin-left:4px;">v1.0</span>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <a href="/api/" style="color:var(--text-muted);font-size:.82rem;text-decoration:none;" target="_blank">
+        <i class="bi bi-braces me-1"></i>API
+      </a>
+      <a href="/admin/" style="color:var(--text-muted);font-size:.82rem;text-decoration:none;" target="_blank">
+        <i class="bi bi-gear me-1"></i>Admin
+      </a>
+      <span class="badge" style="background:rgba(63,185,80,.15);color:var(--accent3);border:1px solid rgba(63,185,80,.3);font-size:.7rem;font-weight:600;">
+        <i class="bi bi-circle-fill me-1" style="font-size:.45rem;"></i>LIVE
+      </span>
+    </div>
+  </div>
+</nav>
+
+
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge"><i class="bi bi-cpu me-1"></i>ML-Powered · XGBoost · 85% Accuracy</div>
+    <h1>Find Your Perfect<br/><span class="accent">Apartment</span> with Us</h1>
+    <p>
+      Enter your workplace location and budget.Our System will try to find you The bestest budget friendly apartment for you 
+      with your choice 
+    </p>
+    <div class="stats-row" id="live-stats">
+      <div class="stat-item">
+        <span class="number" id="stat-apts">50</span>
+        <span class="label">Apartments</span>
+      </div>
+      <div class="stat-item">
+        <span class="number" id="stat-visits">512</span>
+        <span class="label">Timeline Visits</span>
+      </div>
+      <div class="stat-item">
+        <span class="number" id="stat-searches">0</span>
+        <span class="label">Searches</span>
+      </div>
+      <div class="stat-item">
+        <span class="number">3</span>
+        <span class="label">Cities</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!--  MAIN card -->
+<main class="container pb-5">
+  <div class="row g-4">
+
+    <!-- LEFT:card -->
+    <div class="col-lg-5">
+      <div class="glass-card">
+        <div class="section-title"><i class="bi bi-sliders"></i> Your Preferences</div>
+
+        <!-- City toggle -->
+        <div class="mb-4">
+          <label class="form-label">Select City</label>
+          <div class="city-toggle" id="cityToggle">
+            {% for slug, cfg in city_config.items %}
+            <button type="button"
+                    class="city-btn {% if slug == default_city %}active{% endif %}"
+                    data-city="{{ slug }}"
+                    onclick="selectCity('{{ slug }}', this)">
+              {{ cfg.emoji }} {{ cfg.name }}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- The form (api) card -->
+        <form id="recommendForm"
+              hx-post="/api/recommend/"
+              hx-target="#results-section"
+              hx-swap="innerHTML"
+              hx-indicator="#form-spinner"
+              hx-on::before-request="showLoading()"
+              hx-on::after-request="handleResponse(event)">
+
+          {% csrf_token %}
+          <input type="hidden" name="city" id="cityInput" value="{{ default_city }}" />
+
+          <!-- Name card -->
+          <div class="mb-3">
+            <label class="form-label" for="name"><i class="bi bi-person me-1"></i>Your Name</label>
+            <input type="text" class="form-control" id="name" name="name"
+                   placeholder="e.g. Yash Patil" required maxlength="100" />
+          </div>
+
+          <!-- Mobile card -->
+          <div class="mb-3">
+            <label class="form-label" for="mobile"><i class="bi bi-phone me-1"></i>Mobile (optional)</label>
+            <div class="input-group">
+              <span class="input-group-text">+91</span>
+              <input type="tel" class="form-control" id="mobile" name="mobile"
+                     placeholder="9876543210" maxlength="10" />
+            </div>
+          </div>
+
+          <!-- Workplace / College card -->
+          <div class="mb-3">
+            <label class="form-label"><i class="bi bi-geo-alt me-1"></i>Workplace / College Location</label>
+            <div class="row g-2">
+              <div class="col">
+                <input type="number" class="form-control mono" id="college_lat" name="college_lat"
+                       placeholder="Lat  e.g. 20.0030" step="0.0001"
+                       value="20.0030" required />
+              </div>
+              <div class="col">
+                <input type="number" class="form-control mono" id="college_lon" name="college_lon"
+                       placeholder="Lon  e.g. 73.7910" step="0.0001"
+                       value="73.7910" required />
+              </div>
+            </div>
+            <div class="mt-2 d-flex gap-2 flex-wrap" id="quickLocations">
+              <span class="cluster-chip" role="button" onclick="setLocation(20.0030, 73.7910)" style="cursor:pointer;">
+                <span class="cluster-dot" style="background:#58a6ff;"></span> College Road, Nashik
+              </span>
+              <span class="cluster-chip" role="button" onclick="setLocation(20.0000, 73.7900)" style="cursor:pointer;">
+                <span class="cluster-dot" style="background:#3fb950;"></span> CBS Road
+              </span>
+              <span class="cluster-chip" role="button" onclick="setLocation(19.9620, 73.8320)" style="cursor:pointer;">
+                <span class="cluster-dot" style="background:#f78166;"></span> Nashik Road
+              </span>
+            </div>
+          </div>
+
+          <!-- Budget card   -->
+          <div class="mb-4">
+            <label class="form-label" for="rent_budget">
+              <i class="bi bi-currency-rupee me-1"></i>Max Monthly Budget
+            </label>
+            <input type="range" class="form-range mb-2" id="budgetRange"
+                   min="3000" max="25000" step="500" value="10000"
+                   oninput="updateBudget(this.value)" />
+            <div class="d-flex justify-content-between align-items-center">
+              <span style="font-size:.8rem;color:var(--text-muted);">₹3,000</span>
+              <div class="glass-card py-1 px-3" style="padding:6px 16px !important;">
+                <span style="font-size:1.1rem;font-weight:800;color:var(--accent);" id="budgetDisplay">₹10,000</span>
+                <span style="font-size:.75rem;color:var(--text-muted);">/mo</span>
+              </div>
+              <span style="font-size:.8rem;color:var(--text-muted);">₹25,000</span>
+            </div>
+            <input type="hidden" name="rent_budget" id="rent_budget" value="10000" />
+          </div>
+
+          <!-- Submit card -->
+          <button type="submit" class="btn-find" id="submitBtn">
+            <span class="htmx-indicator" id="form-spinner">
+              <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+              Analysing…
+            </span>
+            <span class="btn-text">
+              <i class="bi bi-stars me-2"></i>Find My Apartment
+            </span>
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Timeline Clusters card -->
+      <div class="glass-card mt-4">
+        <div class="section-title"><i class="bi bi-map"></i> Your Timeline Clusters</div>
+        <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:16px;">
+          Extracted from 512 Google Timeline visits. Clusters identify your regular places.
+        </p>
+        <div class="d-flex flex-wrap gap-2" id="clusterChips">
+          <span class="cluster-chip"><span class="cluster-dot" style="background:#58a6ff;"></span> College/Work</span>
+          <span class="cluster-chip"><span class="cluster-dot" style="background:#3fb950;"></span> Market</span>
+          <span class="cluster-chip"><span class="cluster-dot" style="background:#fd7e14;"></span> Home</span>
+          <span class="cluster-chip"><span class="cluster-dot" style="background:#6f42c1;"></span> Leisure</span>
+          <span class="cluster-chip"><span class="cluster-dot" style="background:#20c997;"></span> Transport</span>
+        </div>
+        <a href="/api/timeline/" target="_blank"
+           style="display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:.8rem;color:var(--accent2);text-decoration:none;">
+          <i class="bi bi-arrow-up-right-square"></i> View raw timeline data
+        </a>
+      </div>
+    </div>
+
 </body>
 </html>
