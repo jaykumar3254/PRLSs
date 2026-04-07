@@ -1,5 +1,11 @@
+import About from './About'
+
 function NavBar(){
-    return <div>NavBar</div>;
+    return <div>
+        NavBar
+        <About/>
+
+    </div>;
 
 }
 

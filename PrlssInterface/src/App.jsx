@@ -1,14 +1,12 @@
 import NavBar from "./Components/NavBar";
-import About from "./Components/About";
-import Home from "./Components/Home";
+import './Index.css'
 
 function App(){
     return(
-        <div>
+        <div className="font-bold bg-red-400" >
             <NavBar/>
-            <About/>
-            <Home/>
             this is App component
+
         </div>
     );
 }
