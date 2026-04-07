@@ -3,7 +3,7 @@ import './Index.css'
 
 function App(){
     return(
-        <div className="font-bold bg-red-400" >
+        <div>
             <NavBar/>
             this is App component
 
