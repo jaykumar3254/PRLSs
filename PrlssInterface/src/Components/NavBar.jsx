@@ -4,7 +4,7 @@ import Help from './Help'
 import Cart from './Cart'
 
 function NavBar(){
-    return <div className='flex gap-9 items-center text-white justify-center bg-pink-400 mt-10 ml-20 mr-20 p-3 rounded-xl' >
+    return <div className='flex gap-40 items-center text-white justify-center bg-transparent border border-white p-5 mt-10 ml-30 mr-30 rounded-xl' >
         <Home/>
         <About/>
         <Help/>
