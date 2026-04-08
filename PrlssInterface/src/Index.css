@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 body{
-    background-color: rgb(2, 1, 6);
+    background-color: rgb(0, 0, 0);
 }
 
 .video-bg {
@@ -12,4 +12,16 @@ body{
   height: 100%;
   object-fit: cover;
   z-index: -2;
+}
+
+@font-face {
+  font-family: 'MyFont';
+  src: url('./assets/fonts/italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.my-font{
+  font-family: 'MyFont',sans-serif;
 }

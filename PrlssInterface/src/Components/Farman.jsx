@@ -53,7 +53,7 @@ function Farman() {
   };
 
   return (
-    <div className="p-5 max-w-md mx-auto bg-transparent text-white rounded-sm border mt-200 border-white">
+    <div className="p-5 max-w-md mx-auto bg-transparent text-white rounded-sm border mt-0 border-white">
       <h2 className="text-xl font-bold mb-4">Upload Apartment Data</h2>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">

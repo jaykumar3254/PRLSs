@@ -16,13 +16,14 @@ function App(){
                 <div className="" >
                     <NavBar/>
                 </div>
-                <div className="text-white mt-170 text-center" >
-                    <p> we find home which feels home  </p>
+                <div className="text-white mt-110 text-center bg-gradient-to-b from-transparent via-black/100 to-black p-36" >
+                    <p className="text-4xl my-font" > We find house which feels home !</p>
                 </div>
-                <div>
+                <div className="pt-80 pb-50">
                     <Farman/>
                 </div>
             </div>
+            
         </div>
     );
 }
